@@ -7,17 +7,17 @@
                  [doric                     "0.9.0"]])
 
 (require '[tailrecursion.boot-useful :refer :all]
-         '[alandipert.huboard :refer :all])
+         '[alandipert.gitgoggle      :refer [issues]])
 
-(def +version+ "1.0.0")
+(def +version+ "1.0.0-SNAPSHOT")
 
 (useful! +version+)
 
 (task-options!
- pom  [:project     'alandipert/huboard
+ pom  [:project     'alandipert/gitgoggle
        :version     +version+
-       :description "A Github status view"
-       :url         "https://github.com/alandipert/enduro"
-       :scm         {:url "https://github.com/alandipert/enduro"}
+       :description "A Github issues status view"
+       :url         "https://github.com/alandipert/gitgoggle"
+       :scm         {:url "https://github.com/alandipert/gitgoggle"}
        :license     {:name "Eclipse Public License"
                      :url  "http://www.eclipse.org/legal/epl-v10.html"}])
