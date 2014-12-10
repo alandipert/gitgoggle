@@ -91,7 +91,7 @@
         (let [issues (->> (or (seq repos) (map :name (org-repos org)))
                           (mapcat #(repo-issues org %)))]
           (if (seq issues)
-            (println (issues-table (get-format format doric/org)))
+            (println (issues-table (get-format format doric/org) issues))
             (binding [*out* *err*]
               (println "No issues to display.")))))
       (throw (IllegalArgumentException. "Must specify org")))))
