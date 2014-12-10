@@ -88,8 +88,10 @@
                                   (throw (RuntimeException. token-message)))
                 *http-quiet*  quiet
                 *long-title*  long-title]
-        (->> (or (seq repos) (map :name (org-repos org)))
-             (mapcat #(repo-issues org %))
-             (issues-table (get-format format doric/org))
-             println))
+        (let [issues (->> (or (seq repos) (map :name (org-repos org)))
+                          (mapcat #(repo-issues org %)))]
+          (if (seq issues)
+            (println (issues-table (get-format format doric/org)))
+            (binding [*out* *err*]
+              (println "No issues to display.")))))
       (throw (IllegalArgumentException. "Must specify org")))))

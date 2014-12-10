@@ -9,7 +9,7 @@
 (require '[tailrecursion.boot-useful :refer :all]
          '[alandipert.gitgoggle      :refer [issues]])
 
-(def +version+ "1.0.0-SNAPSHOT")
+(def +version+ "1.0.0")
 
 (useful! +version+)
 
