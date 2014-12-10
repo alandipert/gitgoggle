@@ -1,24 +1,25 @@
 (ns alandipert.gitgoggle
   {:boot/export-tasks true}
-  (:require [clj-http.client :as    client]
-            [clj-time.coerce :as    c]
-            [clj-time.format :as    f]
-            [boot.pod        :as    pod]
-            [boot.util       :as    util]
-            [boot.core       :as    core]
-            [clojure.java.io :as    io]
-            [boot.util       :refer [with-let]]
-            [clojure.string  :as    str]
-            [doric.core      :as    doric]))
+  (:require [clj-http.client       :as    client]
+            [clj-time.coerce       :as    c]
+            [clj-time.format       :as    f]
+            [boot.pod              :as    pod]
+            [boot.util             :as    util]
+            [boot.core             :as    core]
+            [clojure.java.io       :as    io]
+            [boot.util             :refer [with-let]]
+            [clojure.string        :as    str]
+            [doric.core            :as    doric]))
 
 (declare ^:dynamic *token*)
 (def     ^:dynamic *http-quiet* false)
 (def     ^:dynamic *long-title* true)
 
-(defn get* [url]
-  (binding [*out* *err*]
-    (if-not *http-quiet*(println (str "GET " url "...")))
-    (:body (client/get url {:query-params {"access_token" *token*} :as :json}))))
+(let [out (agent nil)]
+  (defn get* [url]
+    (binding [*out* *err*]
+      (if-not *http-quiet* (send-off out (fn [_] (println (str "GET " url "...")))))
+      (:body (client/get url {:query-params {"access_token" *token*} :as :json})))))
 
 (defn orgs []
   (get* "https://api.github.com/user/orgs"))
@@ -89,7 +90,8 @@
                 *http-quiet*  quiet
                 *long-title*  long-title]
         (let [issues (->> (or (seq repos) (map :name (org-repos org)))
-                          (mapcat #(repo-issues org %)))]
+                          (pmap #(repo-issues org %))
+                          (mapcat identity))]
           (if (seq issues)
             (println (issues-table (get-format format doric/org) issues))
             (binding [*out* *err*]
